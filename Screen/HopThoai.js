@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity, TouchableNativeFeedback, TouchableHighlight } from 'react-native';
 import SmsAndroid from 'react-native-get-sms-android';
 import PersonMessengerScreen from './PersonMessenger';
+import { DeviceEventEmitter } from 'react-native';
 var filter = {
   box: '' //// 'inbox' (default), 'sent', 'draft', 'outbox', 'failed', 'queued', and '' for all
 };
 
 class Item extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   _messContent = (content = '') => {
     if (content.length >= 20) {
       return content.slice(0, 25) + '...';
@@ -24,6 +29,12 @@ class Item extends Component {
   };
   render() {
     const { item, index, onClick } = this.props;
+    this.smsNotReadCount = 0;
+    item[1].forEach((item, index) => {
+      if (item.read == 0) {
+        this.smsNotReadCount = this.smsNotReadCount + 1;
+      }
+    });
     return (
       <TouchableOpacity
         onPress={() => {
@@ -37,9 +48,9 @@ class Item extends Component {
             <View style={{ flex: 1, alignItems: 'flex-end', flexDirection: 'row' }}>
               <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#282828', flex: 1 }}>{item[0]}</Text>
 
-              {item[1][0].read == 0 ? (
+              {this.smsNotReadCount != 0 ? (
                 <View style={{ height: 20, width: 20, backgroundColor: 'orange', borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ color: '#9F9F9F' }}>1</Text>
+                  <Text style={{ color: '#fff' }}>{this.smsNotReadCount}</Text>
                 </View>
               ) : null}
             </View>
@@ -60,7 +71,7 @@ export default class HopThoai extends Component {
     this.state = { arrMess: [] };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     SmsAndroid.list(
       JSON.stringify(filter),
       fail => {
@@ -93,13 +104,47 @@ export default class HopThoai extends Component {
         });
       }
     );
+    DeviceEventEmitter.addListener('EVET_TEST', event => {
+      SmsAndroid.list(
+        JSON.stringify(filter),
+        fail => {
+          console.log('Failed with this error: ' + fail);
+        },
+        (count, smsList) => {
+          //console.log(smsList);
+          let arr = JSON.parse(smsList);
+
+          let arrObject = [];
+          arr.forEach((value, index) => {
+            if (arrObject[value.address]) {
+              arrObject[value.address].push(value);
+            } else {
+              arrObject[value.address] = [value];
+            }
+          });
+
+          this.peopleArray = Object.keys(arrObject).map(i => {
+            return [i, arrObject[i]];
+          });
+
+          this.peopleArray.sort((a, b) => {
+            if (a[1][0].date < b[1][0].date) return 1;
+            else return -1;
+          });
+
+          this.setState({
+            arrMess: this.peopleArray
+          });
+        }
+      );
+    });
   }
 
   onClick = item => {
-    item[1].sort((a, b) => {
-      if (a.date > b.date) return 1;
-      else return -1;
-    });
+    // item[1].sort((a, b) => {
+    //   if (a.date > b.date) return 1;
+    //   else return -1;
+    // });
     this.props.navigation.navigate('PersonMessengerScreen', {
       data: item
     });

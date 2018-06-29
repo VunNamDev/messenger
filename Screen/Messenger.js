@@ -1,7 +1,24 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
 import Router from './TabRouter';
+import { TestModul } from '../libs/AIBModul';
+import SmsListener from 'react-native-android-sms-listener';
+import { DeviceEventEmitter } from 'react-native';
 export default class Messenger extends Component {
+  constructor(props) {
+    super(props);
+    // let x = '10';
+    // TestModul.callNativeToReact(x, data => {
+    //   alert(data);
+    // });
+  }
+  componentWillMount() {
+    DeviceEventEmitter.addListener('EVET_TEST', event => {
+      console.log('DeviceEventEmitter ' + JSON.stringify(event));
+    });
+  }
+  componentWillUnmount() {}
+
   render() {
     return (
       <View style={styles.container}>
@@ -11,7 +28,7 @@ export default class Messenger extends Component {
             marginRight: 10,
             justifyContent: 'center',
             alignItems: 'center',
-            height: 50,
+            height: 40,
             marginTop: 10,
             borderRadius: 25,
             borderWidth: 1,

@@ -205,6 +205,7 @@ export default class PersonMessenger extends Component {
         <View style={{ flex: 1, transform: [{ scaleY: 1 }] }}>
           <FlatList
             style={{ flex: 1 }}
+            inverted
             showsHorizontalScrollI={false}
             showsVerticalScrollIndicator={false}
             data={this.state.data}
@@ -219,17 +220,15 @@ export default class PersonMessenger extends Component {
               <View style={{ height: 1, backgroundColor: '#EBEBEB' }} />
               <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10, alignItems: 'flex-end' }}>
                 <TouchableOpacity>
-                  <View style={{ height: 35, width: 35, marginBottom: 10, borderWidth: 1, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 40 }} />
+                  <View style={{ height: 35, width: 35, marginBottom: 10, borderRadius: 25, alignItems: 'center', justifyContent: 'center' }}>
+                    <Image style={{ height: 24, width: 24 }} source={require('../icons/attach.png')} />
                   </View>
                 </TouchableOpacity>
                 <View
                   style={{
                     flex: 1,
-
                     margin: 5,
                     flexDirection: 'row',
-
                     paddingTop: 7,
                     alignItems: 'flex-end'
                   }}
@@ -240,10 +239,27 @@ export default class PersonMessenger extends Component {
                     multiline={true}
                     style={{ marginBottom: 7, flex: 1, padding: 1, fontSize: 18 }}
                   />
-                  <View style={{ height: 25, width: 25, borderRadius: 5, borderWidth: 1, marginBottom: 10 }} />
+                  <TouchableOpacity>
+                    <View style={{ height: 25, width: 25, borderRadius: 20, marginBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
+                      <Image style={{ height: 24, width: 24 }} source={require('../icons/icon.png')} />
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <TouchableOpacity>
-                  <View style={{ height: 35, width: 45, borderRadius: 15, borderWidth: 1, marginBottom: 10 }} />
+                  <View
+                    style={{
+                      height: 35,
+                      width: 45,
+                      borderRadius: 15,
+
+                      marginBottom: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: '#f79743'
+                    }}
+                  >
+                    <Text style={{ fontSize: 18, color: '#fff' }}>Gửi</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
