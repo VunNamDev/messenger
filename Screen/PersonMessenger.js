@@ -30,7 +30,7 @@ class Header extends Component {
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={{ color: '#3A3A3A', fontSize: 18, fontWeight: 'bold' }}>{this.props.address}</Text>
         </View>
-        {console.log('adr ' + this.props.address)}
+
         {this._identifiedChatfuel(this.props.address) == 0 ? (
           <View style={{ marginRight: 10, width: 100, height: 60, flexDirection: 'row' }}>
             <TouchableOpacity>
@@ -60,24 +60,25 @@ class Header extends Component {
   }
 }
 let lastDate = new Date();
-
+let objDate = {};
+let arrDate = [];
 class Item extends Component {
   constructor(props) {
     super(props);
     this.state = {
       color: '#FAFAFA'
     };
-
-    console.log(lastDate);
   }
-
-  _compareDate = date => {
-    if (date.toLocaleDateString() == lastDate.toLocaleDateString()) {
+  componentDidMount() {
+    objDate = {};
+    arrDate = [];
+  }
+  _compareDate = () => {
+    if (!objDate[moment(this.date).format('DD-MM-YYYY')]) {
+      objDate[moment(this.date).format('DD-MM-YYYY')] = moment(this.date).format('DD-MM-YYYY');
+      arrDate.push(moment(this.date).format('DD-MM-YYYY'));
+      console.log(moment(this.date).format('DD-MM-YYYY'));
       return 1;
-    }
-    lastDate = date;
-    {
-      console.log('so sánh 2' + date + ' vafff ' + lastDate);
     }
     return 0;
   };
@@ -88,7 +89,7 @@ class Item extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {this._compareDate(this.date) == 0 ? (
+        {this.props.dataLength - 1 == index ? (
           <View
             style={{
               justifyContent: 'center',
@@ -101,64 +102,84 @@ class Item extends Component {
           >
             <View style={{ flex: 1, height: 1, backgroundColor: '#BEBEBE' }} />
             <View style={{ flex: 2, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 12 }}>{this.date.toLocaleDateString()}</Text>
+              <Text style={{ fontSize: 12 }}>{moment(this.date).format('DD-MM-YYYY')}</Text>
             </View>
             <View style={{ flex: 1, height: 1, backgroundColor: '#BEBEBE' }} />
           </View>
         ) : null}
-        {item.type == 1 ? (
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
-            {isShowTick ? (
-              <TouchableOpacity
-                onPress={() => {
-                  clickItem(item, index);
-                }}
-              >
+        <View style={{ flex: 1 }}>
+          {item.type == 1 ? (
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
+              {isShowTick ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    clickItem(item, index);
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: item.isTick ? '#444' : '#fff',
+                      width: 20,
+                      height: 20,
+                      borderRadius: 25,
+                      borderWidth: 1,
+                      borderColor: 'black',
+                      margin: 10,
+                      marginLeft: 35,
+                      marginRight: 5
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <View style={{ width: 40, height: 40, borderRadius: 25, borderWidth: 1, borderColor: 'black', margin: 10, marginRight: 5 }} />
+              )}
+              <View style={{ flex: 2 / 3, alignItems: 'flex-end', flexDirection: 'row' }}>
+                <View style={{ backgroundColor: '#EBEBEB', borderRadius: 10, margin: 10, padding: 10, marginLeft: 0 }}>
+                  <Text style={{ fontSize: 16, color: '#252525' }}>{item.body}</Text>
+                </View>
+                <Text style={{ fontSize: 10, marginBottom: 10 }}>{moment(this.date).format('HH:mm')}</Text>
+              </View>
+            </View>
+          ) : (
+            <View style={{ flex: 1, alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'flex-end' }}>
+              <View style={{ flex: 2 / 3, justifyContent: 'flex-end', alignItems: 'flex-end', flexDirection: 'row' }}>
+                <Text style={{ fontSize: 10, marginBottom: 10 }}>{moment(this.date).format('HH:mm')}</Text>
                 <View
                   style={{
-                    backgroundColor: item.isTick ? '#444' : '#fff',
-                    width: 20,
-                    height: 20,
-                    borderRadius: 25,
-                    borderWidth: 1,
-                    borderColor: 'black',
+                    alignItems: 'flex-end',
+                    backgroundColor: '#37B7C0',
+                    borderRadius: 10,
                     margin: 10,
-                    marginLeft: 35,
-                    marginRight: 5
-                  }}
-                />
-              </TouchableOpacity>
-            ) : (
-              <View style={{ width: 40, height: 40, borderRadius: 25, borderWidth: 1, borderColor: 'black', margin: 10, marginRight: 5 }} />
-            )}
-            <View style={{ flex: 2 / 3, alignItems: 'flex-end', flexDirection: 'row' }}>
-              <View style={{ backgroundColor: '#EBEBEB', borderRadius: 10, margin: 10, padding: 10, marginLeft: 0 }}>
-                <Text style={{ fontSize: 16, color: '#252525' }}>{item.body}</Text>
-              </View>
-              <Text style={{ fontSize: 10, marginBottom: 10 }}>{moment(this.date).format('hh:mm')}</Text>
-            </View>
-          </View>
-        ) : (
-          <View style={{ flex: 1, alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <View style={{ flex: 2 / 3, justifyContent: 'flex-end', alignItems: 'flex-end', flexDirection: 'row' }}>
-              <Text style={{ fontSize: 10, marginBottom: 10 }}>{moment(this.date).format('hh:mm')}</Text>
-              <View
-                style={{
-                  alignItems: 'flex-end',
-                  backgroundColor: '#37B7C0',
-                  borderRadius: 10,
-                  margin: 10,
-                  padding: 10,
+                    padding: 10,
 
-                  marginRight: 0
-                }}
-              >
-                <Text style={{ fontSize: 16, color: '#252525' }}>{item.body}</Text>
+                    marginRight: 0
+                  }}
+                >
+                  <Text style={{ fontSize: 16, color: '#252525' }}>{item.body}</Text>
+                </View>
               </View>
+              <View style={{ width: 40, height: 40, borderRadius: 25, borderWidth: 1, borderColor: 'black', margin: 10, marginLeft: 5 }} />
             </View>
-            <View style={{ width: 40, height: 40, borderRadius: 25, borderWidth: 1, borderColor: 'black', margin: 10, marginLeft: 5 }} />
+          )}
+        </View>
+        {this._compareDate() == 1 && index != 0 ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              height: 20,
+              marginLeft: 10,
+              marginRight: 10,
+              alignItems: 'center',
+              flexDirection: 'row'
+            }}
+          >
+            <View style={{ flex: 1, height: 1, backgroundColor: '#BEBEBE' }} />
+            <View style={{ flex: 2, height: 20, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 12 }}>{arrDate[arrDate.length - 2]}</Text>
+            </View>
+            <View style={{ flex: 1, height: 1, backgroundColor: '#BEBEBE' }} />
           </View>
-        )}
+        ) : null}
       </View>
     );
   }
@@ -192,26 +213,25 @@ export default class PersonMessenger extends Component {
     //alert(this.state.status);
   };
   clickItem = (item, index) => {
-    const list = this.state.data;
-    list[index].isTick = !list[index].isTick;
+    // const list = this.state.data;
+    // list[index].isTick = !list[index].isTick;
     this.setState({ data: list });
   };
   render() {
     return (
       <View style={styles.container}>
-        {console.log(this.state.address)}
         <Header address={this.state.address} {...this.props} onClick={this.onClick} />
 
         <View style={{ flex: 1, transform: [{ scaleY: 1 }] }}>
           <FlatList
+            inverted={true}
             style={{ flex: 1 }}
-            inverted
             showsHorizontalScrollI={false}
             showsVerticalScrollIndicator={false}
             data={this.state.data}
             keyExtractor={({ item, index }) => index + ''}
             renderItem={({ item, index }) => {
-              return <Item key={index} item={item} index={index} status={this.state.status} clickItem={this.clickItem} />;
+              return <Item key={index} item={item} index={index} status={this.state.status} clickItem={this.clickItem} dataLength={this.state.data.length} />;
             }}
           />
 
